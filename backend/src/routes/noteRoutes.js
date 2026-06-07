@@ -1,0 +1,8 @@
+const router = require('express').Router();
+const auth = require('../middleware/authMiddleware');
+const { list, create, update, remove } = require('../controllers/noteController');
+router.get('/:customerId', auth, list);
+router.post('/', auth, create);
+router.patch('/:id', auth, update);
+router.delete('/:id', auth, remove);
+module.exports = router;
