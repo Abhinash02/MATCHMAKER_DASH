@@ -66,7 +66,7 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const app = express();
 
 // CORS
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173', 'https://perfectpair-five.vercel.app')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
