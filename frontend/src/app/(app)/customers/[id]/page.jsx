@@ -7,6 +7,7 @@ import api from '../../../../api/client';
 import { formatAge, formatIncome, formatDate, matchBadgeClass, statusColor } from '../../../../utils/format';
 import NoteLog from '../../../../components/NoteLog';
 import MatchCard from '../../../../components/MatchCard';
+import Loader from '../../../../components/Loader';
 
 export default function CustomerDetail() {
   const { id } = useParams();
@@ -16,10 +17,24 @@ export default function CustomerDetail() {
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
+  const [notesCount, setNotesCount] = useState(0);
+  const [hasNewNote, setHasNewNote] = useState(false);
 
   useEffect(() => {
     api.get(`/customers/${id}`).then(r => setCustomer(r.data)).catch(() => toast.error('Profile not found')).finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    api.get(`/notes/${id}`).then(r => {
+      setNotesCount(r.data.length);
+      const now = new Date();
+      const hasRecent = r.data.some(n => {
+        const diffHours = (now - new Date(n.createdAt).getTime()) / (1000 * 60 * 60);
+        return diffHours < 24;
+      });
+      setHasNewNote(hasRecent);
+    }).catch(() => {});
+  }, [id, activeTab]);
 
   const loadMatches = async () => {
     setLoadingMatches(true);
@@ -41,6 +56,7 @@ export default function CustomerDetail() {
       });
       setCustomer(updated.data);
       toast.success(`Match sent to ${match.firstName} ${match.lastName}!`);
+      setActiveTab('sent');
     } catch { toast.error('Failed to send match'); }
   };
 
@@ -53,7 +69,7 @@ export default function CustomerDetail() {
     } catch { toast.error('Failed to delete'); }
   };
 
-  if (loading) return <div className="p-12 text-center text-gray-400">Loading…</div>;
+  if (loading) return <div className="card p-12 max-w-5xl mx-auto mt-6"><Loader label="Loading profile…" /></div>;
   if (!customer) return <div className="p-12 text-center text-gray-400">Profile not found</div>;
 
   const tabs = [
@@ -85,7 +101,30 @@ export default function CustomerDetail() {
               </div>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setActiveTab('notes')}
+              className={`btn-secondary text-sm flex items-center gap-1.5 relative transition-all ${
+                hasNewNote
+                  ? 'border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold ring-2 ring-rose-100'
+                  : ''
+              }`}
+            >
+              <span>💬 Logs</span>
+              {notesCount > 0 && (
+                <span className={`px-1.5 py-0.5 text-[10px] rounded-full font-bold leading-none ${
+                  hasNewNote ? 'bg-rose-600 text-white animate-pulse' : 'bg-gray-100 text-gray-600'
+                }`}>
+                  {notesCount}
+                </span>
+              )}
+              {hasNewNote && (
+                <>
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-rose-600 rounded-full border border-white" />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-rose-600 rounded-full border border-white animate-ping" />
+                </>
+              )}
+            </button>
             <Link href={`/customers/${id}/edit`} className="btn-secondary text-sm">Edit</Link>
             <button onClick={handleDelete} className="btn-danger text-sm">Delete</button>
           </div>
@@ -172,7 +211,7 @@ export default function CustomerDetail() {
       {activeTab === 'matches' && (
         <div>
           {loadingMatches ? (
-            <div className="p-12 text-center text-gray-400">Finding best matches with AI…</div>
+            <div className="card p-12"><Loader label="Finding best matches with AI…" /></div>
           ) : matches.length === 0 ? (
             <div className="p-12 text-center text-gray-400">No matches found</div>
           ) : (

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import api from '../../../../../api/client';
 import ProfileForm from '../../../../../components/ProfileForm';
+import Loader from '../../../../../components/Loader';
 
 export default function EditProfile() {
   const { id } = useParams();
@@ -27,7 +28,7 @@ export default function EditProfile() {
     }
   };
 
-  if (loading) return <div className="p-12 text-center text-gray-400">Loading…</div>;
+  if (loading) return <div className="card p-12 max-w-3xl mx-auto mt-6"><Loader label="Loading profile…" /></div>;
   if (!customer) return <div className="p-12 text-center text-gray-400">Profile not found</div>;
 
   return (

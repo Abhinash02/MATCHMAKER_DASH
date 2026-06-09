@@ -41,7 +41,6 @@ export default function Signup() {
       const { data } = await api.post('/auth/signup', { name: form.name, email: form.email, password: form.password });
       login(data.token, data.user);
       toast.success('Account created successfully!');
-      router.push('/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.error || 'Signup failed');
     } finally {

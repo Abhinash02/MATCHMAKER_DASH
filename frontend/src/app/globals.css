@@ -29,4 +29,42 @@
   .badge-high { @apply bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full; }
   .badge-good { @apply bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-0.5 rounded-full; }
   .badge-possible { @apply bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-0.5 rounded-full; }
+
+  /* Premium Loader Styles */
+  .premium-loader {
+    @apply flex flex-col items-center justify-center space-y-2 py-12;
+  }
+  .spinner-ring {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .spinner-ring::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3.5px solid transparent;
+    border-top-color: #e11d48; /* rose-600 */
+    border-bottom-color: #fda4af; /* rose-300 */
+    animation: premium-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+  .spinner-heart {
+    font-size: 18px;
+    color: #e11d48; /* rose-600 */
+    animation: heart-pulse 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes premium-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes heart-pulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
 }

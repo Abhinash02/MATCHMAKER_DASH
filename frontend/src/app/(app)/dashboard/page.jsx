@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import api from '../../../api/client';
-import { formatAge, formatIncome, statusColor, genderIcon } from '../../../utils/format';
+import { formatAge, formatIncome, statusColor, genderIcon } from '../../../utils/format';import Loader from '../../../components/Loader';
+
 
 export default function Dashboard() {
   const router = useRouter();
@@ -90,7 +91,7 @@ export default function Dashboard() {
 
       <div className="card overflow-hidden overflow-x-auto">
         {loading ? (
-          <div className="p-12 text-center text-gray-400">Loading…</div>
+          <Loader label="Loading clients…" />
         ) : customers.length === 0 ? (
           <div className="p-12 text-center">
             <p className="text-gray-400 text-lg mb-2">No profiles found</p>

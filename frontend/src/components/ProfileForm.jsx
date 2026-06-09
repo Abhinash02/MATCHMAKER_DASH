@@ -313,9 +313,9 @@ export default function ProfileForm({ initial = {}, onSubmit, submitLabel = 'Sav
         <button type="button" onClick={() => setSection(s => Math.max(0, s - 1))}
           disabled={section === 0} className="btn-secondary disabled:opacity-40">← Previous</button>
         {section < SECTIONS.length - 1 ? (
-          <button type="button" onClick={() => setSection(s => s + 1)} className="btn-primary">Next →</button>
+          <button key="next" type="button" onClick={() => setSection(s => s + 1)} className="btn-primary">Next →</button>
         ) : (
-          <button type="submit" disabled={saving || !form.firstName || !form.lastName}
+          <button key="submit" type="submit" disabled={saving || !form.firstName || !form.lastName}
             className="btn-primary px-8 disabled:opacity-50">
             {saving ? 'Saving…' : submitLabel}
           </button>
