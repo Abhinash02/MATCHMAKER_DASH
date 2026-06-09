@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Country, State } from 'country-state-city';
+import { Country, State, City } from 'country-state-city';
 import CustomSelect from './CustomSelect';
 
 const allCountries = Country.getAllCountries();
@@ -13,6 +13,7 @@ const countryOptions = allCountries.map(c => ({
 
 export default function LocationSelect({ country, state, city, onChange }) {
   const [stateOptions, setStateOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
 
   useEffect(() => {
     if (country) {
@@ -28,9 +29,28 @@ export default function LocationSelect({ country, state, city, onChange }) {
     }
   }, [country]);
 
-  const handleCountryChange = (val) => onChange({ country: val, state: '', city });
-  const handleStateChange = (val) => onChange({ country, state: val, city });
-  const handleCityChange = (e) => onChange({ country, state, city: e.target.value });
+  useEffect(() => {
+    if (country && state) {
+      const foundCountry = allCountries.find(c => c.name === country);
+      if (foundCountry) {
+        const states = State.getStatesOfCountry(foundCountry.isoCode);
+        const foundState = states.find(s => s.name === state);
+        if (foundState) {
+          const cities = City.getCitiesOfState(foundCountry.isoCode, foundState.isoCode);
+          setCityOptions(cities.map(c => ({ value: c.name, label: c.name })));
+        } else {
+          setCityOptions([]);
+        }
+      } else {
+        setCityOptions([]);
+      }
+    } else {
+      setCityOptions([]);
+    }
+  }, [country, state]);
+
+  const handleCountryChange = (val) => onChange({ country: val, state: '', city: '' });
+  const handleStateChange = (val) => onChange({ country, state: val, city: '' });
 
   return (
     <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -60,14 +80,24 @@ export default function LocationSelect({ country, state, city, onChange }) {
       {/* City */}
       <div>
         <label className="label">City</label>
-        <input
-          type="text"
-          className="input"
-          placeholder="e.g. Mumbai"
-          value={city}
-          onChange={handleCityChange}
-          disabled={!country}
-        />
+        {cityOptions.length > 0 ? (
+          <CustomSelect
+            value={city}
+            onChange={(val) => onChange({ country, state, city: val })}
+            options={cityOptions}
+            placeholder="Select city"
+            disabled={!state}
+          />
+        ) : (
+          <input
+            type="text"
+            className="input"
+            placeholder="e.g. Mumbai"
+            value={city}
+            onChange={(e) => onChange({ country, state, city: e.target.value })}
+            disabled={!state}
+          />
+        )}
       </div>
     </div>
   );

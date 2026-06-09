@@ -9,6 +9,25 @@ const HOBBIES = ['Reading', 'Travelling', 'Cooking', 'Music', 'Dancing', 'Fitnes
 const LANGUAGES = ['Hindi', 'English', 'Bengali', 'Tamil', 'Telugu', 'Marathi', 'Gujarati', 'Kannada', 'Malayalam', 'Punjabi'];
 const SECTIONS = ['Basic', 'Career', 'Values', 'Preferences', 'Bio'];
 
+const DESIGNATIONS = [
+  'Software Engineer', 'Senior Software Engineer', 'Product Manager', 'Data Scientist',
+  'Consultant', 'Business Analyst', 'Marketing Manager', 'Financial Analyst',
+  'HR Manager', 'Doctor (MD/MBBS)', 'Chartered Accountant (CA)', 'Lawyer',
+  'Architect', 'Business Owner / Entrepreneur', 'Civil Servant (IAS/IPS)', 'Professor / Teacher'
+];
+
+const DEGREES = [
+  'B.Tech / B.E.', 'M.Tech / M.E.', 'MBA', 'B.Com / M.Com',
+  'B.Sc / M.Sc', 'MBBS / MD', 'B.A. / M.A.', 'BCA / MCA',
+  'Ph.D.', 'LLB / LLM', 'BBA', 'B.Arch'
+];
+
+const CASTES = [
+  'Brahmin', 'Rajput', 'Agarwal', 'Gupta', 'Jat', 'Khatri', 'Arora',
+  'Yadav', 'Patel', 'Maratha', 'Kayastha', 'Reddy', 'Nair', 'Iyer', 'Iyengar',
+  'Baniya', 'None / Open to all'
+];
+
 // Defined outside component so they are stable references — prevents focus loss on re-render
 function Field({ label, children, error }) {
   return (
@@ -102,6 +121,42 @@ export default function ProfileForm({ initial = {}, onSubmit, submitLabel = 'Sav
   const [generatingBio, setGeneratingBio] = useState(false);
   const [generatingExp, setGeneratingExp] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const isCustomDesignation = form.designation && !DESIGNATIONS.includes(form.designation);
+  const selectedDesignation = isCustomDesignation ? 'Other' : form.designation;
+
+  const handleDesignationSelect = (e) => {
+    const val = e.target.value;
+    if (val === 'Other') {
+      set('designation', '');
+    } else {
+      set('designation', val);
+    }
+  };
+
+  const isCustomDegree = form.degree && !DEGREES.includes(form.degree);
+  const selectedDegree = isCustomDegree ? 'Other' : form.degree;
+
+  const handleDegreeSelect = (e) => {
+    const val = e.target.value;
+    if (val === 'Other') {
+      set('degree', '');
+    } else {
+      set('degree', val);
+    }
+  };
+
+  const isCustomCaste = form.caste && !CASTES.includes(form.caste);
+  const selectedCaste = isCustomCaste ? 'Other' : form.caste;
+
+  const handleCasteSelect = (e) => {
+    const val = e.target.value;
+    if (val === 'Other') {
+      set('caste', '');
+    } else {
+      set('caste', val);
+    }
+  };
 
   const set = (k, v) => {
     setForm(f => ({ ...f, [k]: v }));
@@ -223,13 +278,31 @@ export default function ProfileForm({ initial = {}, onSubmit, submitLabel = 'Sav
       {section === 1 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextInput label="Current Company" value={form.currentCompany} onChange={e => set('currentCompany', e.target.value)} placeholder="Google India" />
-          <TextInput label="Designation" value={form.designation} onChange={e => set('designation', e.target.value)} placeholder="Software Engineer" />
+          <div>
+            <SelectInput label="Designation" value={selectedDesignation} onChange={handleDesignationSelect}
+              options={[['', 'Select Designation'], ...DESIGNATIONS.map(d => [d, d]), ['Other', 'Other (Type Custom)']]} />
+            {(selectedDesignation === 'Other' || isCustomDesignation) && (
+              <div className="mt-2">
+                <input type="text" className="input" placeholder="Type custom designation…"
+                  value={form.designation} onChange={e => set('designation', e.target.value)} />
+              </div>
+            )}
+          </div>
           <Field label="Annual Income (INR)" error={errors.income}>
             <input type="number" className={`input ${errors.income ? 'border-red-400' : ''}`} placeholder="1500000 (= ₹15L)"
               value={form.income} onChange={e => set('income', e.target.value)} min="0" />
           </Field>
           <TextInput label="Undergraduate College" value={form.undergraduateCollege} onChange={e => set('undergraduateCollege', e.target.value)} placeholder="IIT Bombay" />
-          <TextInput label="Degree" value={form.degree} onChange={e => set('degree', e.target.value)} placeholder="B.Tech Computer Science" />
+          <div>
+            <SelectInput label="Degree" value={selectedDegree} onChange={handleDegreeSelect}
+              options={[['', 'Select Degree'], ...DEGREES.map(d => [d, d]), ['Other', 'Other (Type Custom)']]} />
+            {(selectedDegree === 'Other' || isCustomDegree) && (
+              <div className="mt-2">
+                <input type="text" className="input" placeholder="Type custom degree (e.g. B.Tech CS)…"
+                  value={form.degree} onChange={e => set('degree', e.target.value)} />
+              </div>
+            )}
+          </div>
           <SelectInput label="Education Tier" value={form.educationTier} onChange={e => set('educationTier', e.target.value)}
             options={[['premium','Premium (IIT/IIM/NIT)'],['good','Good (Other Tier-1)'],['average','Average']]} />
         </div>
@@ -240,7 +313,16 @@ export default function ProfileForm({ initial = {}, onSubmit, submitLabel = 'Sav
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SelectInput label="Religion" value={form.religion} onChange={e => set('religion', e.target.value)}
             options={[['','Select'], ...RELIGIONS.map(r => [r,r])]} />
-          <TextInput label="Caste" value={form.caste} onChange={e => set('caste', e.target.value)} placeholder="Brahmin" />
+          <div>
+            <SelectInput label="Caste" value={selectedCaste} onChange={handleCasteSelect}
+              options={[['', 'Select Caste'], ...CASTES.map(c => [c, c]), ['Other', 'Other (Type Custom)']]} />
+            {(selectedCaste === 'Other' || isCustomCaste) && (
+              <div className="mt-2">
+                <input type="text" className="input" placeholder="Type custom caste…"
+                  value={form.caste} onChange={e => set('caste', e.target.value)} />
+              </div>
+            )}
+          </div>
           <SelectInput label="Manglik" value={form.manglik} onChange={e => set('manglik', e.target.value)}
             options={[['dont_know',"Don't Know"],['yes','Yes'],['no','No']]} />
           <SelectInput label="Family Type" value={form.familyType} onChange={e => set('familyType', e.target.value)}
