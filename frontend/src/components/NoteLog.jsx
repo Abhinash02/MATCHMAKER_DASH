@@ -77,7 +77,7 @@ export default function NoteLog({ customerId }) {
       <div className="card p-5">
         <h3 className="font-semibold text-gray-900 mb-3">Add Interaction Note</h3>
         <form onSubmit={handleAdd} className="space-y-3">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {NOTE_TYPES.map(t => (
               <button type="button" key={t}
                 onClick={() => setType(t)}
@@ -112,7 +112,7 @@ export default function NoteLog({ customerId }) {
             <div key={note._id} className="card p-4">
               {editingId === note._id ? (
                 <div className="space-y-3">
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {NOTE_TYPES.map(t => (
                       <button type="button" key={t}
                         onClick={() => setEditType(t)}
@@ -135,17 +135,27 @@ export default function NoteLog({ customerId }) {
                 </div>
               ) : (
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${typeColor[note.type]}`}>
                         {typeIcon[note.type]} {note.type}
                       </span>
                       <span className="text-xs text-gray-400">{formatDate(note.createdAt)}</span>
                       {note.updatedAt !== note.createdAt && <span className="text-xs text-gray-400">(edited)</span>}
                     </div>
-                    <div className="flex gap-2">
-                      <button onClick={() => startEdit(note)} className="text-xs text-gray-500 hover:text-rose-600 font-medium">Edit</button>
-                      <button onClick={() => handleDelete(note._id)} className="text-xs text-red-400 hover:text-red-600 font-medium">Delete</button>
+                    <div className="flex gap-1 self-end sm:self-auto">
+                      <button
+                        onClick={() => startEdit(note)}
+                        className="flex items-center gap-1 text-xs text-gray-500 hover:text-rose-600 font-medium px-2.5 py-1.5 rounded-md hover:bg-rose-50 transition-colors border border-gray-200 hover:border-rose-200"
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(note._id)}
+                        className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 font-medium px-2.5 py-1.5 rounded-md hover:bg-red-50 transition-colors border border-red-100 hover:border-red-200"
+                      >
+                        🗑️ Delete
+                      </button>
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 leading-relaxed">{note.content}</p>

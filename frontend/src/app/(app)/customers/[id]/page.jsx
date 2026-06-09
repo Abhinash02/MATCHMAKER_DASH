@@ -80,28 +80,28 @@ export default function CustomerDetail() {
   ];
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       <Link href="/dashboard" className="text-sm text-gray-500 hover:text-rose-600 flex items-center gap-1 mb-4">
         ← Back to Dashboard
       </Link>
 
-      <div className="card p-6 mb-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center text-2xl font-bold">
+      <div className="card p-4 sm:p-6 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center text-xl sm:text-2xl font-bold flex-shrink-0">
               {customer.firstName[0]}{customer.lastName[0]}
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">{customer.firstName} {customer.lastName}</h1>
+              <h1 className="text-lg sm:text-xl font-bold text-gray-900">{customer.firstName} {customer.lastName}</h1>
               <p className="text-gray-500 text-sm">{formatAge(customer.dateOfBirth)} yrs · {customer.city}{customer.country !== 'India' ? `, ${customer.country}` : ''}</p>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex flex-wrap items-center gap-2 mt-2">
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColor(customer.status)}`}>{customer.status}</span>
                 <span className="text-xs text-gray-400 capitalize">{customer.gender}</span>
                 <span className="text-xs text-gray-400">{customer.religion}</span>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setActiveTab('notes')}
               className={`btn-secondary text-sm flex items-center gap-1.5 relative transition-all ${
@@ -125,17 +125,17 @@ export default function CustomerDetail() {
                 </>
               )}
             </button>
-            <Link href={`/customers/${id}/edit`} className="btn-secondary text-sm">Edit</Link>
-            <button onClick={handleDelete} className="btn-danger text-sm">Delete</button>
+            <Link href={`/customers/${id}/edit`} className="btn-secondary text-sm">✏️ Edit</Link>
+            <button onClick={handleDelete} className="btn-danger text-sm">🗑️ Delete</button>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-1 bg-white border border-gray-100 rounded-xl p-1 mb-4">
+      <div className="flex gap-1 bg-white border border-gray-100 rounded-xl p-1 mb-4 overflow-x-auto scrollbar-none">
         {tabs.map(tab => (
           <button key={tab.id}
             onClick={() => tab.id === 'matches' ? loadMatches() : setActiveTab(tab.id)}
-            className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${activeTab === tab.id ? 'bg-rose-600 text-white' : 'text-gray-500 hover:text-gray-900'}`}>
+            className={`flex-shrink-0 flex-1 min-w-[80px] py-2 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab.id ? 'bg-rose-600 text-white' : 'text-gray-500 hover:text-gray-900'}`}>
             {tab.label}
           </button>
         ))}
@@ -230,10 +230,10 @@ export default function CustomerDetail() {
           ) : (
             <div className="space-y-3">
               {customer.sentMatches.map(m => (
-                <div key={m._id} className="card p-5">
-                  <div className="flex items-center justify-between mb-2">
+                <div key={m._id} className="card p-4 sm:p-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-sm">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-sm flex-shrink-0">
                         {m.matchedName?.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
                       <div>
@@ -241,7 +241,7 @@ export default function CustomerDetail() {
                         <p className="text-xs text-gray-400">{formatDate(m.sentAt)}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 self-end sm:self-auto">
                       <span className="text-lg font-bold text-gray-900">{m.score}</span>
                       <span className={matchBadgeClass(m.label)}>{m.label}</span>
                     </div>

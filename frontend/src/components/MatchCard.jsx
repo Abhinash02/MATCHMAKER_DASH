@@ -64,7 +64,7 @@ export default function MatchCard({ match, client, onSend }) {
       {/* Expanded */}
       {expanded && (
         <div className="mt-4 space-y-3 border-t border-gray-100 pt-4">
-          <div className="grid grid-cols-3 gap-3 text-xs text-gray-600">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-gray-600">
             <span><strong>Religion:</strong> {match.religion || '—'}</span>
             <span><strong>Diet:</strong> {match.diet || '—'}</span>
             <span><strong>Kids:</strong> {match.wantKids || '—'}</span>
@@ -75,7 +75,7 @@ export default function MatchCard({ match, client, onSend }) {
 
           {/* AI Intro */}
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
               <p className="text-xs font-semibold text-gray-500">AI Intro Email</p>
               <button onClick={generateIntro} disabled={loadingIntro}
                 className="text-xs text-rose-600 hover:text-rose-700 font-medium disabled:opacity-50 flex items-center gap-1">

@@ -129,7 +129,13 @@ export default function Layout({ children }) {
             <div className="w-7 h-7 bg-rose-100 text-rose-700 rounded-full flex items-center justify-center font-semibold text-xs flex-shrink-0">
               {user?.name?.[0]?.toUpperCase()}
             </div>
-            <button onClick={handleLogout} className="text-xs text-gray-400 hover:text-red-500 transition-colors" title="Logout">⏻</button>
+            <button
+              onClick={handleLogout}
+              title="Logout"
+              className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors border border-gray-200 hover:border-red-200 text-base flex-shrink-0"
+            >
+              ⏻
+            </button>
           </div>
         </header>
 
